@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
-import { toast } from 'react-hot-toast'
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { toast } from 'react-hot-toast';
 
 const Context = createContext();
 
@@ -35,7 +35,6 @@ export const StateContext = ({ children }) => {
     }
 
     toast.success(`${qty} ${qty > 1 ? `${product.name}s` : `${product.name}`} added to the cart.`);
-
   } 
 
   const onRemove = (product) => {
@@ -47,7 +46,7 @@ export const StateContext = ({ children }) => {
     setCartItems(newCartItems);
   }
 
-  const toggleCartItemQuanity = (id, value) => {
+  const toggleCartItemQuantity = (id, value) => {
     foundProduct = cartItems.find((item) => item._id === id)
     index = cartItems.findIndex((product) => product._id === id);
     const newCartItems = cartItems.filter((item) => item._id !== id)
@@ -66,41 +65,39 @@ export const StateContext = ({ children }) => {
   }
 
   const incQty = () => {
-    setQty((oldQty) => {
-      const tempQty = oldQty + 1;
-      return tempQty;
-    });
-  };
+    setQty((prevQty) => prevQty + 1);
+  }
 
   const decQty = () => {
-    setQty((oldQty) => {
-      let tempQty = oldQty - 1;
-      if (tempQty < 1) {
-        tempQty = 1;
-      }
-      return tempQty;
+    setQty((prevQty) => {
+      if(prevQty - 1 < 1) return 1;
+     
+      return prevQty - 1;
     });
-  };
+  }
 
   return (
-    <Context.Provider value={{
-      showCart, 
-      cartItems, 
-      totalQuantities, 
-      qty, 
-      incQty, 
-      decQty,
-      onAdd,
-      setShowCart,
-      totalPrice,
-      setTotalPrice,
-      toggleCartItemQuanity,
-      onRemove
-      }}>
+    <Context.Provider
+      value={{
+        showCart,
+        setShowCart,
+        cartItems,
+        totalPrice,
+        totalQuantities,
+        qty,
+        incQty,
+        decQty,
+        onAdd,
+        toggleCartItemQuantity,
+        onRemove,
+        setCartItems,
+        setTotalPrice,
+        setTotalQuantities 
+      }}
+    >
       {children}
     </Context.Provider>
   )
 }
 
 export const useStateContext = () => useContext(Context);
-

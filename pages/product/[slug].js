@@ -1,13 +1,20 @@
-import React, {useState} from 'react'
-import { client, urlFor } from '../../lib/client'
-import { AiOutlineMinus, AiOutlinePlus, AiFillStar, AiOutlineStar } from 'react-icons/ai'
-import { Product } from '../../components'
-import { useStateContext } from '../../context/StateContext'
+import React, { useState } from 'react';
+import { AiOutlineMinus, AiOutlinePlus, AiFillStar, AiOutlineStar } from 'react-icons/ai';
 
-export const ProductDetails = ({ products, product}) => {
+import { client, urlFor } from '../../lib/client';
+import { Product } from '../../components';
+import { useStateContext } from '../../context/StateContext';
+
+const ProductDetails = ({ product, products }) => {
   const { image, name, details, price } = product;
-  const [index, setIndex ] = useState(0);
-  const { decQty, incQty, qty, onAdd } = useStateContext();
+  const [index, setIndex] = useState(0);
+  const { decQty, incQty, qty, onAdd, setShowCart } = useStateContext();
+
+  const handleBuyNow = () => {
+    onAdd(product, qty);
+
+    setShowCart(true);
+  }
 
   return (
     <div>
@@ -55,7 +62,7 @@ export const ProductDetails = ({ products, product}) => {
           </div>
           <div className="buttons">
             <button type="button" className="add-to-cart" onClick={() => onAdd(product, qty)}>Add to Cart</button>
-            <button type="button" className="buy-now" >Buy Now</button>
+            <button type="button" className="buy-now" onClick={handleBuyNow}>Buy Now</button>
           </div>
         </div>
       </div>
@@ -79,12 +86,13 @@ export const getStaticPaths = async () => {
     slug {
       current
     }
-  }`;
+  }
+  `;
 
   const products = await client.fetch(query);
 
   const paths = products.map((product) => ({
-    params: {
+    params: { 
       slug: product.slug.current
     }
   }));
@@ -106,7 +114,5 @@ export const getStaticProps = async ({ params: { slug }}) => {
     props: { products, product }
   }
 }
-
-
 
 export default ProductDetails
